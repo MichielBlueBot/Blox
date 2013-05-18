@@ -35,6 +35,7 @@ public class NodeDropCalculator {
 			Coordinate cMain = calculateLowestFreeCoordinate(c, p, dd);
 			Coordinate cOff = calculateLowestFreeCoordinate(Coordinate.getCoordinate(c.getX()+1, c.getY()), p, dd);
 			if(cMain==null || cOff == null){
+				//Empty list
 				return blockNodes;
 			}else{
 				int lowestYMain = cMain.getY();
@@ -59,6 +60,7 @@ public class NodeDropCalculator {
 						blockNodes.addAll(getDropNodes(type, c.getX(), lowestYMain, dd));
 					}
 				} else{
+					//Empty list
 					return blockNodes;
 				}
 				break;
@@ -66,12 +68,14 @@ public class NodeDropCalculator {
 		case Line:
 			Coordinate cMainLine = calculateLowestFreeCoordinate(c, p, dd);
 			if(cMainLine==null){
+				//Empty list
 				return blockNodes;
 			} else{
 				int lowestY = cMainLine.getY();
 				if(lowestY>=0 && lowestY<=Coordinate.maxY){
 					blockNodes.addAll(getDropNodes(type, c.getX(), lowestY, dd));
 				} else{
+					//Empty list
 					return blockNodes;
 				}
 			}
@@ -86,6 +90,7 @@ public class NodeDropCalculator {
 			Coordinate cMainSquare = calculateLowestFreeCoordinate(c, p, dd);
 			Coordinate cOffSquare = calculateLowestFreeCoordinate(Coordinate.getCoordinate(c.getX()+1, c.getY()), p, dd);
 			if(cMainSquare==null || cOffSquare == null){
+				//Empty list
 				return blockNodes;
 			}else{
 				int lowestYMain = cMainSquare.getY();
@@ -110,10 +115,21 @@ public class NodeDropCalculator {
 						blockNodes.addAll(getDropNodes(type, c.getX(), lowestY, dd));
 					}
 				} else {
+					//Empty list
 					return blockNodes;
 				}
 			}
 			break;
+		}
+		/**
+		 * Last check for incompatibility
+		 */
+		for(Node n: blockNodes){
+			if(n.isActive() && n.getOwner().getOwner()==p){
+				//There is still an invalid node, return nothing.
+				blockNodes.clear();
+				break;
+			}
 		}
 		return blockNodes;
 	}

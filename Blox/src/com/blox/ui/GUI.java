@@ -67,6 +67,7 @@ public class GUI extends JFrame implements WindowListener {
 	private Player playerLeft;
 	private Player playerRight;
 	private GamePhase currentGamePhase;
+	public Player currentPlayer;
 	//Textfields top bar
 	private JTextField jtfBlockPhase1;
 	private JTextField jtfPowerupPhase;
@@ -240,90 +241,110 @@ public class GUI extends JFrame implements WindowListener {
 		jlPlayer1Hand1.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
 				if(SwingUtilities.isLeftMouseButton(e)){
-					setAllHandBordersGray();
-					jlPlayer1Hand1.setBorder(BorderFactory.createLineBorder(Color.CYAN, 3));
-					gp.playerHandClicked(1,1);
+					if(currentPlayer==playerRight){
+						setAllHandBordersGray();
+						jlPlayer1Hand1.setBorder(BorderFactory.createLineBorder(Color.CYAN, 3));
+						gp.playerHandClicked(1,1);
+					}
 				}
 			}
 		});
 		jlPlayer1Hand2.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
 				if(SwingUtilities.isLeftMouseButton(e)){
-					setAllHandBordersGray();
-					jlPlayer1Hand2.setBorder(BorderFactory.createLineBorder(Color.CYAN, 3));
-					gp.playerHandClicked(1,2);
+					if(currentPlayer==playerRight){
+						setAllHandBordersGray();
+						jlPlayer1Hand2.setBorder(BorderFactory.createLineBorder(Color.CYAN, 3));
+						gp.playerHandClicked(1,2);
+					}
 				}
 			}
 		});
 		jlPlayer1Hand3.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
 				if(SwingUtilities.isLeftMouseButton(e)){
-					setAllHandBordersGray();
-					jlPlayer1Hand3.setBorder(BorderFactory.createLineBorder(Color.CYAN, 3));
-					gp.playerHandClicked(1,3);
+					if(currentPlayer==playerRight){
+						setAllHandBordersGray();
+						jlPlayer1Hand3.setBorder(BorderFactory.createLineBorder(Color.CYAN, 3));
+						gp.playerHandClicked(1,3);
+					}
 				}
 			}
 		});
 		jlPlayer1Hand4.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
 				if(SwingUtilities.isLeftMouseButton(e)){
-					setAllHandBordersGray();
-					jlPlayer1Hand4.setBorder(BorderFactory.createLineBorder(Color.CYAN, 3));
-					gp.playerHandClicked(1,4);
+					if(currentPlayer==playerRight){
+						setAllHandBordersGray();
+						jlPlayer1Hand4.setBorder(BorderFactory.createLineBorder(Color.CYAN, 3));
+						gp.playerHandClicked(1,4);
+					}
 				}
 			}
 		});
 		jlPlayer1Hand5.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
 				if(SwingUtilities.isLeftMouseButton(e)){
-					setAllHandBordersGray();
-					jlPlayer1Hand5.setBorder(BorderFactory.createLineBorder(Color.CYAN, 3));
-					gp.playerHandClicked(1,5);
+					if(currentPlayer==playerRight){
+						setAllHandBordersGray();
+						jlPlayer1Hand5.setBorder(BorderFactory.createLineBorder(Color.CYAN, 3));
+						gp.playerHandClicked(1,5);
+					}
 				}
 			}
 		});
 		jlPlayer2Hand1.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
 				if(SwingUtilities.isLeftMouseButton(e)){
-					setAllHandBordersGray();
-					jlPlayer2Hand1.setBorder(BorderFactory.createLineBorder(Color.CYAN, 3));
-					gp.playerHandClicked(2,1);
+					if(currentPlayer==playerLeft){
+						setAllHandBordersGray();
+						jlPlayer2Hand1.setBorder(BorderFactory.createLineBorder(Color.CYAN, 3));
+						gp.playerHandClicked(2,1);
+					}
 				}
 			}
 		});
 		jlPlayer2Hand2.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
 				if(SwingUtilities.isLeftMouseButton(e)){
-					setAllHandBordersGray();
-					jlPlayer2Hand2.setBorder(BorderFactory.createLineBorder(Color.CYAN, 3));
-					gp.playerHandClicked(2,2);
+					if(currentPlayer==playerLeft){
+						setAllHandBordersGray();
+						jlPlayer2Hand2.setBorder(BorderFactory.createLineBorder(Color.CYAN, 3));
+						gp.playerHandClicked(2,2);
+					}
 				}
 			}
 		});
 		jlPlayer2Hand3.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
 				if(SwingUtilities.isLeftMouseButton(e)){
-					setAllHandBordersGray();
-					jlPlayer2Hand3.setBorder(BorderFactory.createLineBorder(Color.CYAN, 3));
-					gp.playerHandClicked(2,3);
+					if(currentPlayer==playerLeft){
+						setAllHandBordersGray();
+						jlPlayer2Hand3.setBorder(BorderFactory.createLineBorder(Color.CYAN, 3));
+						gp.playerHandClicked(2,3);
+					}
 				}
 			}
 		});
 		jlPlayer2Hand4.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
 				if(SwingUtilities.isLeftMouseButton(e)){
-					setAllHandBordersGray();
-					jlPlayer2Hand4.setBorder(BorderFactory.createLineBorder(Color.CYAN, 3));
-					gp.playerHandClicked(2,4);
+					if(currentPlayer==playerLeft){
+						setAllHandBordersGray();
+						jlPlayer2Hand4.setBorder(BorderFactory.createLineBorder(Color.CYAN, 3));
+						gp.playerHandClicked(2,4);
+					}
 				}
 			}
 		});
 		jlPlayer2Hand5.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
 				if(SwingUtilities.isLeftMouseButton(e)){
-					setAllHandBordersGray();
-					jlPlayer2Hand5.setBorder(BorderFactory.createLineBorder(Color.CYAN, 3));
-					gp.playerHandClicked(2,5);
+					if(currentPlayer==playerLeft){
+						setAllHandBordersGray();
+						jlPlayer2Hand5.setBorder(BorderFactory.createLineBorder(Color.CYAN, 3));
+						gp.playerHandClicked(2,5);
+					}
 				}
 			}
 		});

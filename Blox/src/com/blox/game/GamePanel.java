@@ -145,7 +145,7 @@ public class GamePanel extends JPanel implements Runnable {
 		
 		this.gui.setPlayerLeft(player2);
 		this.gui.setPlayerRight(player1);
-		this.currentPlayer = player1;
+		setCurrentPlayer(player1);
 		this.gamePhase = GamePhase.BlockPhase1;
 		switchTurn();
 		// END create game components END
@@ -596,9 +596,9 @@ public class GamePanel extends JPanel implements Runnable {
 	public void switchTurn(){
 		if(player1!=null && player2!=null){
 			if(this.currentPlayer==player1){
-				this.currentPlayer = player2;
+				setCurrentPlayer(player2);
 			}else{
-				this.currentPlayer = player1;
+				setCurrentPlayer(player1);
 			}
 		}
 		else{
@@ -632,5 +632,10 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	public void setPlaceBlockFlag(boolean b){
 		this.placeBlockFlag = b;
+	}
+	
+	public void setCurrentPlayer(Player player){
+		this.currentPlayer = player;
+		gui.currentPlayer = player;
 	}
 }
