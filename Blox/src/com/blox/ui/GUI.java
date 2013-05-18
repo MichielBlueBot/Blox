@@ -53,8 +53,8 @@ public class GUI extends JFrame implements WindowListener {
 	public static int DEFAULT_HANDCONTAINER_WIDTH = DEFAULT_SIDECONTAINER_WIDTH;
 	public static int DEFAULT_HANDCONTAINER_HEIGHT = 3*DEFAULT_SIDECONTAINER_HEIGHT/5;
 	public static int DEFAULT_TOPCONTAINER_HEIGHT = 50;
-	public static int DEFAULT_COORDINATE_WIDTH = 40;
-	public static int DEFAULT_COORDINATE_HEIGHT	= 40;
+	public static int DEFAULT_COORDINATE_WIDTH = 60;
+	public static int DEFAULT_COORDINATE_HEIGHT	= 60;
 	
 	/**
 	 * FIELDS
@@ -66,6 +66,8 @@ public class GUI extends JFrame implements WindowListener {
 	private GamePanel gp;
 	private Player playerLeft;
 	private Player playerRight;
+	private int nbOfBlocksInDeckPlayer1 = 0;
+	private int nbOfBlocksInDeckPlayer2 = 0;
 	private GamePhase currentGamePhase;
 	public Player currentPlayer;
 	//Textfields top bar
@@ -75,6 +77,7 @@ public class GUI extends JFrame implements WindowListener {
 	
 	//Fields left sidebar
 	private JTextField jtfPlayer1Life;
+	private JTextField jtfPlayer1Decksize;
 	private JTextField jtfPlayer1Powerup;
 	private JLabel jlPlayer1Hand1;
 	private JLabel jlPlayer1Hand2;
@@ -84,6 +87,7 @@ public class GUI extends JFrame implements WindowListener {
 	private JPanel jpPlayer1Blocks;
 	//Fields right sidebar
 	private JTextField jtfPlayer2Life;
+	private JTextField jtfPlayer2Decksize;
 	private JTextField jtfPlayer2Powerup;
 	private JLabel jlPlayer2Hand1;
 	private JLabel jlPlayer2Hand2;
@@ -109,7 +113,7 @@ public class GUI extends JFrame implements WindowListener {
 	}
 
 	public GUI(long period) {
-		super("Search");
+		super("Blox");
 		makeGUI(period);
 		setPhase(GamePhase.BlockPhase1);
 		pack(); // first one (the GUI doesn't include the JPanel yet)
@@ -125,7 +129,7 @@ public class GUI extends JFrame implements WindowListener {
 	// Create the GUI, minus the JPanel drawing area
 	{
 		Container c = getContentPane(); // default BorderLayout used
-		c.setLayout(new BorderLayout(0, 10)); // specify gaps
+		c.setLayout(new BorderLayout(10, 10)); // specify gaps
 		
 		/** ADD NORTH GAMESTATE PANEL **/
 		JPanel topContainer = new JPanel();
@@ -151,24 +155,39 @@ public class GUI extends JFrame implements WindowListener {
 		rightContainer.setLayout(new BoxLayout(rightContainer, BoxLayout.Y_AXIS));
 		jtfPlayer1Life = new JTextField("Player 1 LIFE: "+Player.DEFAULT_PLAYER_HEALTH);
 		jtfPlayer1Life.setBackground(new Color(255,255,255));
-		jtfPlayer1Life.setPreferredSize(new Dimension(DEFAULT_SIDECONTAINER_WIDTH, DEFAULT_SIDECONTAINER_HEIGHT/5));
+		jtfPlayer1Life.setPreferredSize(new Dimension(DEFAULT_SIDECONTAINER_WIDTH, DEFAULT_SIDECONTAINER_HEIGHT/10));
+		jtfPlayer1Life.setHorizontalAlignment(JTextField.CENTER);
+		jtfPlayer1Decksize = new JTextField("#Blocks in deck: "+nbOfBlocksInDeckPlayer1);
+		jtfPlayer1Decksize.setBackground(new Color(255,255,255));
+		jtfPlayer1Decksize.setPreferredSize(new Dimension(DEFAULT_SIDECONTAINER_WIDTH, DEFAULT_SIDECONTAINER_HEIGHT/10));
+		jtfPlayer1Decksize.setHorizontalAlignment(JTextField.CENTER);
 		jtfPlayer1Powerup = new JTextField("Player 1 POWERUP");
 		jtfPlayer1Powerup.setPreferredSize(new Dimension(DEFAULT_SIDECONTAINER_WIDTH, DEFAULT_SIDECONTAINER_HEIGHT/5));
+		jtfPlayer1Powerup.setHorizontalAlignment(JTextField.CENTER);
 		jpPlayer1Blocks = new JPanel();
 		jpPlayer1Blocks.setLayout(new GridLayout(5,1));
 		jpPlayer1Blocks.setPreferredSize(new Dimension(DEFAULT_SIDECONTAINER_WIDTH, DEFAULT_HANDCONTAINER_HEIGHT));
 		jtfPlayer2Life = new JTextField("Player 2 LIFE: "+Player.DEFAULT_PLAYER_HEALTH);
 		jtfPlayer2Life.setBackground(new Color(255,255,255));
-		jtfPlayer2Life.setPreferredSize(new Dimension(DEFAULT_SIDECONTAINER_WIDTH, DEFAULT_SIDECONTAINER_HEIGHT/5));
+		jtfPlayer2Life.setPreferredSize(new Dimension(DEFAULT_SIDECONTAINER_WIDTH, DEFAULT_SIDECONTAINER_HEIGHT/10));
+		jtfPlayer2Life.setHorizontalAlignment(JTextField.CENTER);
+		jtfPlayer2Decksize = new JTextField("#Blocks in deck: "+nbOfBlocksInDeckPlayer2);
+		jtfPlayer2Decksize.setBackground(new Color(255,255,255));
+		jtfPlayer2Decksize.setPreferredSize(new Dimension(DEFAULT_SIDECONTAINER_WIDTH, DEFAULT_SIDECONTAINER_HEIGHT/10));
+		jtfPlayer2Decksize.setHorizontalAlignment(JTextField.CENTER);	
 		jtfPlayer2Powerup = new JTextField("Player 2 POWERUP");
 		jtfPlayer2Powerup.setPreferredSize(new Dimension(DEFAULT_SIDECONTAINER_WIDTH, DEFAULT_SIDECONTAINER_HEIGHT/5));
+		jtfPlayer2Powerup.setHorizontalAlignment(JTextField.CENTER);
 		jpPlayer2Blocks = new JPanel();
 		jpPlayer2Blocks.setLayout(new GridLayout(5,1));
 		jpPlayer2Blocks.setPreferredSize(new Dimension(DEFAULT_SIDECONTAINER_WIDTH, DEFAULT_HANDCONTAINER_HEIGHT));
+				
 		leftContainer.add(jtfPlayer1Life);
+		leftContainer.add(jtfPlayer1Decksize);
 		leftContainer.add(jtfPlayer1Powerup);
 		leftContainer.add(jpPlayer1Blocks);
 		rightContainer.add(jtfPlayer2Life);
+		rightContainer.add(jtfPlayer2Decksize);
 		rightContainer.add(jtfPlayer2Powerup);
 		rightContainer.add(jpPlayer2Blocks);
 		c.add(leftContainer, BorderLayout.EAST);
@@ -474,6 +493,14 @@ public class GUI extends JFrame implements WindowListener {
 	public void setPlayerRight(Player p){
 		this.playerRight = p;
 	}
+	
+	public void updatePlayerDecksize(){
+		nbOfBlocksInDeckPlayer2 = playerLeft.getBlockDeck().size();
+		nbOfBlocksInDeckPlayer1 = playerRight.getBlockDeck().size();
+		jtfPlayer1Decksize.setText("#Blocks in deck: "+nbOfBlocksInDeckPlayer1);
+		jtfPlayer2Decksize.setText("#Blocks in deck: "+nbOfBlocksInDeckPlayer2);
+	}
+	
 	  // ----------------- window listener methods -------------
 
 	  public void windowActivated(WindowEvent e) 

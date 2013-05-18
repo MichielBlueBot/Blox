@@ -90,6 +90,7 @@ public class GamePanel extends JPanel implements Runnable {
 	private ArrayList<Node> nodeList;
 	/** BLOCKS **/
 	private Block currentSelectedBlock;
+	private int nbOfCurrentSelectedBlockInHand;
 	/** PLAYERS **/
 	private Player currentPlayer;
 	/** PLAYER1 **/
@@ -121,8 +122,8 @@ public class GamePanel extends JPanel implements Runnable {
 		pHeight = h;
 
 		setBackground(Color.white);
-		//TODO Investigate this -10 hack?
-		setPreferredSize(new Dimension(pWidth-10, pHeight));
+		//TODO Investigate this weird hack "pWidth-2"
+		setPreferredSize(new Dimension(pWidth-2, pHeight));
 
 		setFocusable(true);
 		requestFocus(); // the JPanel now has focus, so receives key events
@@ -135,12 +136,12 @@ public class GamePanel extends JPanel implements Runnable {
 		initialiseAllNodes();
 		/** set up player 1 with deck and hand **/
 		this.player1 = new Player(null, null, 100, Color.red, DropDirection.UP); //player
-		player1.setBlockDeck(BlockDatabase.getRandomDeck(10, player1)); //deck
+		player1.setBlockDeck(BlockDatabase.getRandomDeck(50, player1)); //deck
 		player1.popBlock(5); //hand
 		/** set up player 2 with deck and hand **/
 		this.player2 = new Player(null, null, 100, Color.blue, DropDirection.DOWN); //player
 		this.player2.setColor(Color.blue);
-		player2.setBlockDeck(BlockDatabase.getRandomDeck(10, player2)); //deck
+		player2.setBlockDeck(BlockDatabase.getRandomDeck(50, player2)); //deck
 		player2.popBlock(5); //hand
 		
 		this.gui.setPlayerLeft(player2);
@@ -273,7 +274,6 @@ public class GamePanel extends JPanel implements Runnable {
 
 	private void leftMouseButtonClicked(int x, int y)
 	{
-		System.out.println(x+" "+y);
 		if (!isPaused && !gameOver) {
 			if(this.currentPlayer!=null && this.currentSelectedBlock!=null){
 				setPlaceBlockFlag(true);
@@ -290,13 +290,18 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	private void mouseMotionEvent(int xCoordinate, int yCoordinate){
 		if(this.currentSelectedBlock!=null){
-			for(Node n : this.dropList){
-				n.setFocussed(false);
-			}
-			this.dropList.clear();
-			this.dropList.addAll(this.ndc.getDrop(currentSelectedBlock, Coordinate.getCoordinate(xCoordinate, yCoordinate), this.currentPlayer));
-			for(Node n : dropList){
-				n.setFocussed(true);
+			if(Coordinate.isValidX(xCoordinate, Coordinate.minX, Coordinate.maxX) &&
+					Coordinate.isValidY(yCoordinate, Coordinate.minY, Coordinate.maxY)){
+//				System.out.println("Coordinate MAX: ("+Coordinate.minX+","+Coordinate.minY+") ("+Coordinate.maxX+","+Coordinate.maxY+")");
+//				System.out.println("("+xCoordinate+","+yCoordinate+")");
+				for(Node n : this.dropList){
+					n.setFocussed(false);
+				}
+				this.dropList.clear();
+				this.dropList.addAll(this.ndc.getDrop(currentSelectedBlock, Coordinate.getCoordinate(xCoordinate, yCoordinate), this.currentPlayer));
+				for(Node n : dropList){
+					n.setFocussed(true);
+				}
 			}
 		}
 	}
@@ -305,16 +310,12 @@ public class GamePanel extends JPanel implements Runnable {
 		if(i==1){
 			Object[] currentHand = player1.getHand().toArray();
 			this.currentSelectedBlock = ((Block) currentHand[j-1]);
-			if(this.currentPlayer!=player1){
-				switchTurn();
-			}
+			this.nbOfCurrentSelectedBlockInHand = j;
 		}
 		else if(i==2){
 			Object[] currentHand = player2.getHand().toArray();
 			this.currentSelectedBlock = ((Block) currentHand[j-1]);
-			if(this.currentPlayer!=player2){
-				switchTurn();
-			}
+			this.nbOfCurrentSelectedBlockInHand = j;
 		}
 	}
 
@@ -393,18 +394,24 @@ public class GamePanel extends JPanel implements Runnable {
 					if(n.isActive()){
 						if(this.currentPlayer!=player1){
 							player1.loseLife();
-							gui.updatePlayerHealth();
 						} else{
 							player2.loseLife();
-							gui.updatePlayerHealth();
 						}
 					}
 					n.activate(currentSelectedBlock, currentSelectedBlock.getColor());
 				}
+				//Adjust hand
+				this.currentPlayer.popBlock(nbOfCurrentSelectedBlockInHand);
+				this.nbOfCurrentSelectedBlockInHand = 0;
 				currentSelectedBlock = null;
 				gui.clearHandSelection();
 				setPlaceBlockFlag(false);
 				switchPhase();
+			}
+			gui.updatePlayerHealth();
+			gui.updatePlayerDecksize();
+			if(this.currentPlayer.isDead()){
+				System.out.println(currentPlayer+" is dead!");
 			}
 		}
 	} // end of gameUpdate()

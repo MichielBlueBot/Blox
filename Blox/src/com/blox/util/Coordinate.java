@@ -60,22 +60,22 @@ public class Coordinate {
 	}
 	
 	/**
-	 * Check whether the given y is in the ranges [minY, maxY[
+	 * Check whether the given y is in the ranges [minY, maxY]
 	 */
 	public static boolean isValidY(int y, int minY, int maxY) {
 		boolean result = false;
-		if((y>=minY) && (y<maxY)){
+		if((y>=minY) && (y<=maxY)){
 			result = true;
 		}
 		return result;
 	}
 
 	/**
-	 * Check whether the given x is in the ranges [minX, maxX[
+	 * Check whether the given x is in the ranges [minX, maxX]
 	 */
 	public static boolean isValidX(int x, int minX, int maxX) {
 		boolean result = false;
-		if((x>=minX) && (x<maxX)){
+		if((x>=minX) && (x<=maxX)){
 			result = true;
 		}
 		return result;

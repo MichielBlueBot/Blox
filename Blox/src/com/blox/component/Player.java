@@ -21,7 +21,7 @@ public class Player {
 	private ArrayDeque<Block> blockDeck; //Blocks in the players deck.
 	private ArrayDeque<Powerup> powerupDeck; //Powerups in the players deck.
 	private int health; //The amount of health this player has left.
-	private boolean isDead;
+	private boolean outOfBlocks = false;
 	private Powerup currentPowerup;
 	private ArrayDeque<Block> hand;	//The blocks in this players hand, these are available for play.
 	private Color color;
@@ -102,6 +102,8 @@ public class Player {
 				}
 				this.hand.add(block);
 			}
+		} else{
+			this.setOutOfBlocks(true);
 		}
 	}
 	
@@ -146,7 +148,11 @@ public class Player {
 	}
 
 	public boolean isDead() {
-		return health<=0;
+		return health<=0 || outOfBlocks;
+	}
+
+	private void setOutOfBlocks(boolean outOfBlocks) {
+		this.outOfBlocks = outOfBlocks;
 	}
 
 }
