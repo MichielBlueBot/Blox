@@ -86,8 +86,9 @@ public abstract class Block {
 		this.isActive = isActive;
 	}
 	
-	public void activate(ArrayList<Node> nodeList, Color color){
-		
+	public void activate(ArrayList<Node> nodeList){
+		this.nodeList = nodeList;
+		this.setActive(true);
 	}
 
 	public Player getOwner() {

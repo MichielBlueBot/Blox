@@ -16,16 +16,11 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import com.blox.block.Block;
 import com.blox.block.BlockDatabase;
-import com.blox.block.BlockType;
-import com.blox.block.CornerBlock;
-import com.blox.block.SquareBlock;
 import com.blox.component.Node;
 import com.blox.component.Player;
 import com.blox.util.Coordinate;
@@ -103,6 +98,9 @@ public class GamePanel extends JPanel implements Runnable {
 	private Player player2;
 	/** GAMESTATE **/
 	private GamePhase gamePhase;
+	
+	/** FLAGS **/
+	private boolean placeBlockFlag;
 	//TODO ADD GAME ELEMENTS HERE
 
 	// used at game termination
@@ -145,9 +143,15 @@ public class GamePanel extends JPanel implements Runnable {
 		player2.setBlockDeck(BlockDatabase.getRandomDeck(10, player2)); //deck
 		player2.popBlock(5); //hand
 		
+		this.gui.setPlayerLeft(player2);
+		this.gui.setPlayerRight(player1);
 		this.currentPlayer = player1;
 		this.gamePhase = GamePhase.BlockPhase1;
+		switchTurn();
 		// END create game components END
+		// FLAGS
+		this.placeBlockFlag = false;
+		// END FLAGS
 		
 		gameOver = false;
 
@@ -271,8 +275,9 @@ public class GamePanel extends JPanel implements Runnable {
 	{
 		System.out.println(x+" "+y);
 		if (!isPaused && !gameOver) {
-			//TODO DO SOMETHING
-			
+			if(this.currentPlayer!=null && this.currentSelectedBlock!=null){
+				setPlaceBlockFlag(true);
+			}
 		}
 	}
 	
@@ -285,7 +290,6 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	private void mouseMotionEvent(int xCoordinate, int yCoordinate){
 		if(this.currentSelectedBlock!=null){
-			//TODO make Drop Direction turn based.
 			for(Node n : this.dropList){
 				n.setFocussed(false);
 			}
@@ -299,14 +303,18 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	public void playerHandClicked(int i, int j) {
 		if(i==1){
-			System.out.println("Player1's hand was clicked. Block nr."+j);
 			Object[] currentHand = player1.getHand().toArray();
 			this.currentSelectedBlock = ((Block) currentHand[j-1]);
+			if(this.currentPlayer!=player1){
+				switchTurn();
+			}
 		}
 		else if(i==2){
-			System.out.println("Player2's hand was clicked. Block nr."+j);
 			Object[] currentHand = player2.getHand().toArray();
 			this.currentSelectedBlock = ((Block) currentHand[j-1]);
+			if(this.currentPlayer!=player2){
+				switchTurn();
+			}
 		}
 	}
 
@@ -376,6 +384,28 @@ public class GamePanel extends JPanel implements Runnable {
 		if (!isPaused && !gameOver) {
 			//TODO Do something with game state
 			// You can for instance set certain flags and here you would then put: if(flag) => do something
+			/** PLACE A BLOCK **/
+			if(placeBlockFlag){
+				//Place the block
+				currentSelectedBlock.activate(new ArrayList<Node>(dropList));
+				for(Node n : dropList){
+					n.setFocussed(false);
+					if(n.isActive()){
+						if(this.currentPlayer!=player1){
+							player1.loseLife();
+							gui.updatePlayerHealth();
+						} else{
+							player2.loseLife();
+							gui.updatePlayerHealth();
+						}
+					}
+					n.activate(currentSelectedBlock, currentSelectedBlock.getColor());
+				}
+				currentSelectedBlock = null;
+				gui.clearHandSelection();
+				setPlaceBlockFlag(false);
+				switchPhase();
+			}
 		}
 	} // end of gameUpdate()
 
@@ -598,5 +628,9 @@ public class GamePanel extends JPanel implements Runnable {
 			}
 		}
 		gui.setPhase(this.gamePhase);
+	}
+	
+	public void setPlaceBlockFlag(boolean b){
+		this.placeBlockFlag = b;
 	}
 }

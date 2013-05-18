@@ -64,6 +64,9 @@ public class GUI extends JFrame implements WindowListener {
 	public static final int coordinateWidth = DEFAULT_COORDINATE_WIDTH;
 	public static final int coordinateHeight = DEFAULT_COORDINATE_HEIGHT;
 	private GamePanel gp;
+	private Player playerLeft;
+	private Player playerRight;
+	private GamePhase currentGamePhase;
 	//Textfields top bar
 	private JTextField jtfBlockPhase1;
 	private JTextField jtfPowerupPhase;
@@ -145,7 +148,7 @@ public class GUI extends JFrame implements WindowListener {
 		rightContainer.setPreferredSize(new Dimension(DEFAULT_SIDECONTAINER_WIDTH, DEFAULT_SIDECONTAINER_HEIGHT));
 		leftContainer.setLayout(new BoxLayout(leftContainer, BoxLayout.Y_AXIS));
 		rightContainer.setLayout(new BoxLayout(rightContainer, BoxLayout.Y_AXIS));
-		jtfPlayer1Life = new JTextField("Player 1 LIFE");
+		jtfPlayer1Life = new JTextField("Player 1 LIFE: "+Player.DEFAULT_PLAYER_HEALTH);
 		jtfPlayer1Life.setBackground(new Color(255,255,255));
 		jtfPlayer1Life.setPreferredSize(new Dimension(DEFAULT_SIDECONTAINER_WIDTH, DEFAULT_SIDECONTAINER_HEIGHT/5));
 		jtfPlayer1Powerup = new JTextField("Player 1 POWERUP");
@@ -153,7 +156,7 @@ public class GUI extends JFrame implements WindowListener {
 		jpPlayer1Blocks = new JPanel();
 		jpPlayer1Blocks.setLayout(new GridLayout(5,1));
 		jpPlayer1Blocks.setPreferredSize(new Dimension(DEFAULT_SIDECONTAINER_WIDTH, DEFAULT_HANDCONTAINER_HEIGHT));
-		jtfPlayer2Life = new JTextField("Player 2 LIFE");
+		jtfPlayer2Life = new JTextField("Player 2 LIFE: "+Player.DEFAULT_PLAYER_HEALTH);
 		jtfPlayer2Life.setBackground(new Color(255,255,255));
 		jtfPlayer2Life.setPreferredSize(new Dimension(DEFAULT_SIDECONTAINER_WIDTH, DEFAULT_SIDECONTAINER_HEIGHT/5));
 		jtfPlayer2Powerup = new JTextField("Player 2 POWERUP");
@@ -324,6 +327,20 @@ public class GUI extends JFrame implements WindowListener {
 				}
 			}
 		});
+		
+		jtfPowerupPhase.addMouseListener(new MouseAdapter() {
+			public void mousePressed(MouseEvent e) {
+				if(SwingUtilities.isLeftMouseButton(e)){
+					if(currentGamePhase==GamePhase.PowerupPhase){
+						gp.switchPhase();
+					}
+				}
+			}
+		});
+	}
+	
+	public void clearHandSelection(){
+		this.setAllHandBordersGray();
 	}
 	
 	private void setAllHandBordersGray(){
@@ -345,12 +362,16 @@ public class GUI extends JFrame implements WindowListener {
 		jtfBlockPhase2.setBackground(new Color(255,255,255));
 		switch(phase){
 			case BlockPhase1:
+				this.currentGamePhase = GamePhase.BlockPhase1;
 				jtfBlockPhase1.setBackground(new Color(0,255,0));
 				break;
 			case PowerupPhase:
+				this.currentGamePhase = GamePhase.PowerupPhase;
 				jtfPowerupPhase.setBackground(new Color(0,255,0));
+				jtfPowerupPhase.setText("Powerup Phase");
 				break;
 			case BlockPhase2:
+				this.currentGamePhase = GamePhase.BlockPhase2;
 				jtfBlockPhase2.setBackground(new Color(0,255,0));
 				break;
 		}
@@ -361,11 +382,15 @@ public class GUI extends JFrame implements WindowListener {
 		DropDirection dd = p.getDropDirection();
 		switch(dd){
 		case UP:
+			jtfPlayer1Life.setForeground(Color.white);
 			jtfPlayer1Life.setBackground(color);
+			jtfPlayer2Life.setForeground(Color.black);
 			jtfPlayer2Life.setBackground(new Color(255,255,255));
 			break;
 		case DOWN:
+			jtfPlayer1Life.setForeground(Color.black);
 			jtfPlayer1Life.setBackground(new Color(255,255,255));
+			jtfPlayer2Life.setForeground(Color.white);
 			jtfPlayer2Life.setBackground(color);
 			break;
 		}
@@ -414,6 +439,19 @@ public class GUI extends JFrame implements WindowListener {
 				jlPlayer2Hand5.setIcon(icon);
 				break;
 		}
+	}
+	
+	public void updatePlayerHealth(){
+		jtfPlayer2Life.setText("Player 2 health: "+playerLeft.getHealth());
+		jtfPlayer1Life.setText("Player 1 health: "+playerRight.getHealth());
+	}
+	
+	public void setPlayerLeft(Player p){
+		this.playerLeft = p;
+	}
+	
+	public void setPlayerRight(Player p){
+		this.playerRight = p;
 	}
 	  // ----------------- window listener methods -------------
 

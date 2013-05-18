@@ -21,6 +21,7 @@ public class Player {
 	private ArrayDeque<Block> blockDeck; //Blocks in the players deck.
 	private ArrayDeque<Powerup> powerupDeck; //Powerups in the players deck.
 	private int health; //The amount of health this player has left.
+	private boolean isDead;
 	private Powerup currentPowerup;
 	private ArrayDeque<Block> hand;	//The blocks in this players hand, these are available for play.
 	private Color color;
@@ -128,6 +129,24 @@ public class Player {
 
 	private void setDropDirection(DropDirection dropDirection) {
 		this.dropDirection = dropDirection;
+	}
+
+	/**
+	 * Lowers this players health by 1.
+	 */
+	public void loseLife() {
+		this.health = this.health-1;
+	}
+	
+	/**
+	 * Lowest this players health by 'amount'.
+	 */
+	public void loseLife(int amount){
+		this.health = this.health-amount;
+	}
+
+	public boolean isDead() {
+		return health<=0;
 	}
 
 }
