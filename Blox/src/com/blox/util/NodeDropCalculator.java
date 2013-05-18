@@ -6,6 +6,7 @@ import java.util.Collection;
 import com.blox.block.Block;
 import com.blox.block.BlockType;
 import com.blox.component.Node;
+import com.blox.component.Player;
 
 public class NodeDropCalculator {
 	
@@ -19,9 +20,10 @@ public class NodeDropCalculator {
 	 * at that position.
 	 * @return List of nodes where that would would be placed, empty array if not valid.
 	 */
-	public ArrayList<Node> getDrop(Block block, Coordinate c, DropDirection dd){
+	public ArrayList<Node> getDrop(Block block, Coordinate c, Player p){
 		ArrayList<Node> blockNodes = new ArrayList<Node>();
 		BlockType type = block.getType();
+		DropDirection dd = p.getDropDirection();
 		switch(type){
 		case Corner:
 			if(c.getX()==Coordinate.maxX){

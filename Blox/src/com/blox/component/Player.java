@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import com.blox.block.Block;
 import com.blox.powerup.Powerup;
+import com.blox.util.DropDirection;
 
 public class Player {
 	
@@ -23,6 +24,7 @@ public class Player {
 	private Powerup currentPowerup;
 	private ArrayDeque<Block> hand;	//The blocks in this players hand, these are available for play.
 	private Color color;
+	private DropDirection dropDirection; //UP or DOWN
 	
 	public Player(){
 		//TODO work out
@@ -32,9 +34,10 @@ public class Player {
 		setHealth(DEFAULT_PLAYER_HEALTH);
 		setHand(new ArrayDeque<Block>());
 		setColor(DEFAULT_PLAYER_COLOR);
+		setDropDirection(DropDirection.UP);
 	}
 	
-	public Player(ArrayDeque<Block> blockDeck, ArrayDeque<Powerup> powerupDeck, int health, Color color){
+	public Player(ArrayDeque<Block> blockDeck, ArrayDeque<Powerup> powerupDeck, int health, Color color, DropDirection drop){
 		//TODO work out
 		setBlockDeck(blockDeck);
 		setPowerupDeck(powerupDeck);
@@ -42,6 +45,7 @@ public class Player {
 		setHealth(health);
 		setHand(new ArrayDeque<Block>());
 		setColor(color);
+		setDropDirection(drop);
 	}
 
 	public ArrayDeque<Block> getBlockDeck() {
@@ -116,6 +120,14 @@ public class Player {
 
 	public void setColor(Color color) {
 		this.color = color;
+	}
+
+	public DropDirection getDropDirection() {
+		return dropDirection;
+	}
+
+	private void setDropDirection(DropDirection dropDirection) {
+		this.dropDirection = dropDirection;
 	}
 
 }

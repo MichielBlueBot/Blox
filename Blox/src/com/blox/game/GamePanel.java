@@ -95,10 +95,14 @@ public class GamePanel extends JPanel implements Runnable {
 	private ArrayList<Node> nodeList;
 	/** BLOCKS **/
 	private Block currentSelectedBlock;
+	/** PLAYERS **/
+	private Player currentPlayer;
 	/** PLAYER1 **/
 	private Player player1;
 	/** PLAYER2 **/
 	private Player player2;
+	/** GAMESTATE **/
+	private GamePhase gamePhase;
 	//TODO ADD GAME ELEMENTS HERE
 
 	// used at game termination
@@ -130,17 +134,19 @@ public class GamePanel extends JPanel implements Runnable {
 		// create game components
 		this.grid = Grid.getGridWithSpaceBetweenStripes(pWidth, pHeight, GUI.coordinateHeight, GUI.coordinateWidth);
 		this.nodeList = new ArrayList<Node>();
-		initialiseAllNodes();		
+		initialiseAllNodes();
 		/** set up player 1 with deck and hand **/
-		this.player1 = new Player(); //player
-		this.player1.setColor(Color.red);
+		this.player1 = new Player(null, null, 100, Color.red, DropDirection.UP); //player
 		player1.setBlockDeck(BlockDatabase.getRandomDeck(10, player1)); //deck
 		player1.popBlock(5); //hand
 		/** set up player 2 with deck and hand **/
-		this.player2 = new Player(); //player
+		this.player2 = new Player(null, null, 100, Color.blue, DropDirection.DOWN); //player
 		this.player2.setColor(Color.blue);
 		player2.setBlockDeck(BlockDatabase.getRandomDeck(10, player2)); //deck
 		player2.popBlock(5); //hand
+		
+		this.currentPlayer = player1;
+		this.gamePhase = GamePhase.BlockPhase1;
 		// END create game components END
 		
 		gameOver = false;
@@ -284,7 +290,7 @@ public class GamePanel extends JPanel implements Runnable {
 				n.setFocussed(false);
 			}
 			this.dropList.clear();
-			this.dropList.addAll(this.ndc.getDrop(currentSelectedBlock, Coordinate.getCoordinate(xCoordinate, yCoordinate), DropDirection.DOWN));
+			this.dropList.addAll(this.ndc.getDrop(currentSelectedBlock, Coordinate.getCoordinate(xCoordinate, yCoordinate), this.currentPlayer));
 			for(Node n : dropList){
 				n.setFocussed(true);
 			}
@@ -302,7 +308,6 @@ public class GamePanel extends JPanel implements Runnable {
 			Object[] currentHand = player2.getHand().toArray();
 			this.currentSelectedBlock = ((Block) currentHand[j-1]);
 		}
-		
 	}
 
 	public void run()
@@ -400,10 +405,16 @@ public class GamePanel extends JPanel implements Runnable {
 		dbg.setColor(Color.black);
 
 		// draw game elements
+		/**
+		 * Draw Nodes
+		 */
 		ArrayList<Node> nodeCopy = new ArrayList<Node>(nodeList);
 		for(Node n : nodeCopy){
 			n.draw(dbg);
 		}
+		/**
+		 * Draw player1 hand
+		 */
 		ArrayDeque<Block> p1Hand = player1.getHand().clone();
 		Iterator<Block> it = p1Hand.iterator();
 		int i = 1;
@@ -412,6 +423,9 @@ public class GamePanel extends JPanel implements Runnable {
 			gui.setPlayer1HandAtIndex(b.getImage(), i);
 			i++;
 		}
+		/**
+		 * Draw player2 hand
+		 */
 		ArrayDeque<Block> p2Hand = player2.getHand().clone();
 		Iterator<Block> it2 = p2Hand.iterator();
 		int j = 1;
@@ -421,7 +435,9 @@ public class GamePanel extends JPanel implements Runnable {
 			j++;
 		}
 		
-		//draw grid last to draw over the nodes.
+		/**
+		 * Draw grid (last to go over the nodes).
+		 */
 		this.grid.draw(dbg);
 		// TODO Make game objects draw themselves eg: point.draw(dbg).	
 
@@ -536,4 +552,51 @@ public class GamePanel extends JPanel implements Runnable {
 		System.out.println("Average FPS: " + df.format(averageFPS));
 		System.out.println("Average UPS: " + df.format(averageUPS));
 	} // end of printStats()
+	
+	/**
+	 * -----------------------------------------------------------------------------------------------------
+	 * -----------------------------------------------------------------------------------------------------
+	 * -----------------------------------------------------------------------------------------------------
+	 * ----------------------------------------GAME SPECIFIC METHODS----------------------------------------
+	 * -----------------------------------------------------------------------------------------------------
+	 * -----------------------------------------------------------------------------------------------------
+	 * -----------------------------------------------------------------------------------------------------
+	 */
+	
+	public void switchTurn(){
+		if(player1!=null && player2!=null){
+			if(this.currentPlayer==player1){
+				this.currentPlayer = player2;
+			}else{
+				this.currentPlayer = player1;
+			}
+		}
+		else{
+			System.out.println("GamePanel.switchTurn(): ERROR, PLAYERS NOT INITIALISED YET.");
+		}
+		gui.setPlayerTurn(this.currentPlayer);
+	}
+	
+	/**
+	 * Switches the game phase to the next phase:
+	 * BlockPhase1 => PowerupPhase => BlockPhase2 => repeat...
+	 * if the current phase is BlockPhase2, the players also switch turn.
+	 */
+	public void switchPhase(){
+		if(this.gamePhase!=null){
+			switch(gamePhase){
+			case BlockPhase1:
+				this.gamePhase = GamePhase.PowerupPhase;
+				break;
+			case PowerupPhase:
+				this.gamePhase = GamePhase.BlockPhase2;
+				break;
+			case BlockPhase2:
+				switchTurn();
+				this.gamePhase = GamePhase.BlockPhase1;
+				break;
+			}
+		}
+		gui.setPhase(this.gamePhase);
+	}
 }
