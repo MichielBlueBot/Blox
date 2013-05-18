@@ -28,8 +28,10 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
+import com.blox.component.Player;
 import com.blox.game.GamePanel;
 import com.blox.game.GamePhase;
+import com.blox.util.DropDirection;
 
 public class GUI extends JFrame implements WindowListener {
 
@@ -144,7 +146,7 @@ public class GUI extends JFrame implements WindowListener {
 		leftContainer.setLayout(new BoxLayout(leftContainer, BoxLayout.Y_AXIS));
 		rightContainer.setLayout(new BoxLayout(rightContainer, BoxLayout.Y_AXIS));
 		jtfPlayer1Life = new JTextField("Player 1 LIFE");
-		jtfPlayer1Life.setBackground(new Color(255,56,56));
+		jtfPlayer1Life.setBackground(new Color(255,255,255));
 		jtfPlayer1Life.setPreferredSize(new Dimension(DEFAULT_SIDECONTAINER_WIDTH, DEFAULT_SIDECONTAINER_HEIGHT/5));
 		jtfPlayer1Powerup = new JTextField("Player 1 POWERUP");
 		jtfPlayer1Powerup.setPreferredSize(new Dimension(DEFAULT_SIDECONTAINER_WIDTH, DEFAULT_SIDECONTAINER_HEIGHT/5));
@@ -152,7 +154,7 @@ public class GUI extends JFrame implements WindowListener {
 		jpPlayer1Blocks.setLayout(new GridLayout(5,1));
 		jpPlayer1Blocks.setPreferredSize(new Dimension(DEFAULT_SIDECONTAINER_WIDTH, DEFAULT_HANDCONTAINER_HEIGHT));
 		jtfPlayer2Life = new JTextField("Player 2 LIFE");
-		jtfPlayer2Life.setBackground(new Color(56,56,255));
+		jtfPlayer2Life.setBackground(new Color(255,255,255));
 		jtfPlayer2Life.setPreferredSize(new Dimension(DEFAULT_SIDECONTAINER_WIDTH, DEFAULT_SIDECONTAINER_HEIGHT/5));
 		jtfPlayer2Powerup = new JTextField("Player 2 POWERUP");
 		jtfPlayer2Powerup.setPreferredSize(new Dimension(DEFAULT_SIDECONTAINER_WIDTH, DEFAULT_SIDECONTAINER_HEIGHT/5));
@@ -351,6 +353,21 @@ public class GUI extends JFrame implements WindowListener {
 			case BlockPhase2:
 				jtfBlockPhase2.setBackground(new Color(0,255,0));
 				break;
+		}
+	}
+	
+	public void setPlayerTurn(Player p){
+		Color color = p.getColor();
+		DropDirection dd = p.getDropDirection();
+		switch(dd){
+		case UP:
+			jtfPlayer1Life.setBackground(color);
+			jtfPlayer2Life.setBackground(new Color(255,255,255));
+			break;
+		case DOWN:
+			jtfPlayer1Life.setBackground(new Color(255,255,255));
+			jtfPlayer2Life.setBackground(color);
+			break;
 		}
 	}
 	
